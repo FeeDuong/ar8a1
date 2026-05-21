@@ -3,7 +3,7 @@
 const SUPABASE_URL = "https://ymqojrhnllaphkuhbcml.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_1e78hj6Gk9zSu5w6JI9M5A_OhreyjHJ";
 
-const mySupabase = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const mySupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const STUDENT_LIST = [
     "Nguyễn Quốc An",
     "Dương Quỳnh Anh",
