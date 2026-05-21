@@ -2,134 +2,708 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Góp Ý Lớp Học 8A1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RATING HỌC SINH 8A1</title>
+
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.4/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-4 md:p-8">
-  <div class="max-w-5xl mx-auto space-y-6">
-    <header class="text-center space-y-2">
-      <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-orange-400 tracking-wider">
-        GÓP Ý LỚP HỌC 8A1
-      </h1>
-      <p class="text-xs md:text-sm text-gray-400 font-mono">Ẩn danh hoặc hiện tên · lưu trên Supabase</p>
-    </header>
 
-    <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <section class="md:col-span-1 bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-2xl h-fit space-y-4">
-        <h2 class="text-lg font-bold text-pink-500 flex items-center gap-2">📝 Gửi góp ý</h2>
+<body class="bg-gray-950 text-white min-h-screen p-5">
 
-        <div class="space-y-1">
-          <label class="text-xs text-gray-400 font-semibold">Chủ đề:</label>
-          <div class="space-y-1">
-    <label class="text-xs text-gray-400 font-semibold">
-        Chọn học sinh:
-    </label>
+  <div class="max-w-6xl mx-auto">
 
-    <select
-        id="studentSelect"
-        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-2.5 text-sm text-gray-200 focus:outline-none focus:border-pink-500"
-    >
-        <option value="">
-            -- Chọn học sinh --
-        </option>
-    </select>
-</div>
-          <select id="topicSelect" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-2.5 text-sm text-gray-200 focus:outline-none focus:border-pink-500">
-            <option value="hoc_tap">Học tập</option>
-            <option value="noi_quy">Nề nếp / nội quy</option>
-            <option value="hoat_dong">Hoạt động lớp</option>
-            <option value="giao_tiep">Giao tiếp / ứng xử</option>
-            <option value="khac">Khác</option>
+    <h1 class="text-4xl font-black text-center mb-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-transparent bg-clip-text">
+      RATING HỌC SINH 8A1
+    </h1>
+
+    <p class="text-center text-gray-500 mb-8">
+      Hệ thống góp ý & đánh giá lớp học
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- FORM -->
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+
+        <h2 class="text-xl font-bold text-pink-400">
+          Gửi đánh giá
+        </h2>
+
+        <!-- STUDENT -->
+        <div>
+          <label class="text-sm text-gray-400">
+            Chọn học sinh
+          </label>
+
+          <select
+            id="studentSelect"
+            class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl p-3"
+          >
+            <option value="">
+              -- Chọn học sinh --
+            </option>
           </select>
         </div>
 
-        <div class="space-y-2 p-3 bg-gray-950 rounded-xl border border-gray-800">
-          <label class="text-xs text-gray-400 font-semibold block">Danh tính:</label>
-          <div class="flex items-center gap-4">
-            <label class="inline-flex items-center cursor-pointer text-sm">
-              <input type="radio" name="identityMode" value="anonymous" checked class="sr-only peer">
-              <div class="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 peer-checked:bg-purple-500/20 peer-checked:border-purple-500 peer-checked:text-purple-400 transition-all font-bold">
-                🕵️ Ẩn danh
-              </div>
+        <!-- TOPIC -->
+        <div>
+          <label class="text-sm text-gray-400">
+            Chủ đề
+          </label>
+
+          <select
+            id="topicSelect"
+            class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl p-3"
+          >
+            <option value="hoc_tap">
+              Học tập
+            </option>
+
+            <option value="noi_quy">
+              Nề nếp
+            </option>
+
+            <option value="hoat_dong">
+              Hoạt động lớp
+            </option>
+
+            <option value="giao_tiep">
+              Giao tiếp
+            </option>
+
+            <option value="khac">
+              Khác
+            </option>
+          </select>
+        </div>
+
+        <!-- STARS -->
+        <div>
+
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-400">
+              Chấm điểm
+            </span>
+
+            <span
+              id="ratingDisplay"
+              class="font-bold text-yellow-400"
+            >
+              0/10★
+            </span>
+          </div>
+
+          <div class="flex flex-wrap gap-1 text-3xl">
+
+            <span class="star cursor-pointer" data-value="1">★</span>
+            <span class="star cursor-pointer" data-value="2">★</span>
+            <span class="star cursor-pointer" data-value="3">★</span>
+            <span class="star cursor-pointer" data-value="4">★</span>
+            <span class="star cursor-pointer" data-value="5">★</span>
+            <span class="star cursor-pointer" data-value="6">★</span>
+            <span class="star cursor-pointer" data-value="7">★</span>
+            <span class="star cursor-pointer" data-value="8">★</span>
+            <span class="star cursor-pointer" data-value="9">★</span>
+            <span class="star cursor-pointer" data-value="10">★</span>
+
+          </div>
+        </div>
+
+        <!-- IDENTITY -->
+        <div class="space-y-2">
+
+          <div class="text-sm text-gray-400">
+            Danh tính
+          </div>
+
+          <div class="flex gap-4">
+
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="identityMode"
+                value="anonymous"
+                checked
+              />
+
+              <span>Ẩn danh</span>
             </label>
-            <label class="inline-flex items-center cursor-pointer text-sm">
-              <input type="radio" name="identityMode" value="public" class="sr-only peer">
-              <div class="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 peer-checked:bg-green-500/20 peer-checked:border-green-500 peer-checked:text-green-400 transition-all font-bold">
-                👤 Hiện tên
-              </div>
+
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="identityMode"
+                value="public"
+              />
+
+              <span>Hiện tên</span>
             </label>
+
           </div>
-          <div id="nameInputWrapper" class="hidden mt-2">
-            <input type="text" id="senderName" placeholder="Nhập tên..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-xs text-gray-200 focus:outline-none focus:border-green-500">
+
+          <div
+            id="nameInputWrapper"
+            class="hidden"
+          >
+            <input
+              type="text"
+              id="senderName"
+              placeholder="Tên của bạn..."
+              class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3"
+            />
           </div>
+
         </div>
 
-        <div class="space-y-1">
-          <label class="text-xs text-gray-400 font-semibold">Số sao:</label>
-          <div class="flex justify-between items-center mb-1">
-            <span class="text-xs text-gray-500">Chạm sao để đánh giá</span>
-            <span id="ratingDisplay" class="text-sm font-black text-yellow-500 font-mono bg-gray-950 px-2 py-0.5 rounded border border-gray-800">0/10★</span>
-          </div>
-          <div id="ratingStars" class="flex flex-wrap gap-1 text-2xl cursor-pointer py-3 select-none justify-center bg-gray-950 rounded-xl p-2 border border-gray-800 shadow-inner">
-            <span class="star" data-value="1">★</span>
-            <span class="star" data-value="2">★</span>
-            <span class="star" data-value="3">★</span>
-            <span class="star" data-value="4">★</span>
-            <span class="star" data-value="5">★</span>
-            <span class="star" data-value="6">★</span>
-            <span class="star" data-value="7">★</span>
-            <span class="star" data-value="8">★</span>
-            <span class="star" data-value="9">★</span>
-            <span class="star" data-value="10">★</span>
-          </div>
+        <!-- COMMENT -->
+        <div>
+          <label class="text-sm text-gray-400">
+            Nội dung
+          </label>
+
+          <textarea
+            id="reviewComment"
+            rows="5"
+            placeholder="Nhập góp ý..."
+            class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl p-3 resize-none"
+          ></textarea>
         </div>
 
-        <div class="space-y-1">
-          <label class="text-xs text-gray-400 font-semibold">Nội dung góp ý:</label>
-          <textarea id="reviewComment" rows="5" placeholder="Viết góp ý lịch sự, mang tính xây dựng..." class="w-full bg-gray-800 border border-gray-700 rounded-xl p-2.5 text-sm text-gray-200 focus:outline-none focus:border-pink-500 resize-none"></textarea>
-        </div>
-
-        <button id="submitBtn" class="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-lg shadow-pink-500/20 cursor-pointer">
-          Gửi Góp Ý
+        <!-- BUTTON -->
+        <button
+          id="submitBtn"
+          class="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:opacity-90 transition rounded-xl py-3 font-bold"
+        >
+          Gửi đánh giá
         </button>
-      </section>
 
-      <section class="md:col-span-2 space-y-6">
-        <div class="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-2xl space-y-3">
-          <h2 class="text-lg font-bold text-yellow-500">📊 Tổng hợp theo chủ đề</h2>
-          <div id="statsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto pr-1"></div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="md:col-span-2 space-y-6">
+
+        <!-- STATS -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+
+          <h2 class="text-xl font-bold text-yellow-400 mb-4">
+            Bảng xếp hạng
+          </h2>
+
+          <div
+            id="statsContainer"
+            class="grid md:grid-cols-2 gap-3"
+          ></div>
+
         </div>
 
-        <div class="space-y-3">
-          <h2 class="text-lg font-bold text-pink-500">💬 Các góp ý mới nhất</h2>
-          <div class="space-y-1">
-    <label class="text-xs text-gray-400 font-semibold">
-        Chọn học sinh:
-    </label>
+        <!-- REVIEWS -->
+        <div>
 
-    <select
-        id="studentSelect"
-        class="w-full bg-gray-800 border border-gray-700 rounded-xl p-2.5 text-sm text-gray-200 focus:outline-none focus:border-pink-500"
-    >
-        <option value="">
-            -- Chọn học sinh --
-        </option>
-    </select>
-</div>
-          <div id="reviewsContainer" class="space-y-3 max-h-[450px] overflow-y-auto pr-2"></div>
+          <h2 class="text-xl font-bold text-pink-400 mb-4">
+            Bình luận công khai
+          </h2>
+
+          <div
+            id="reviewsContainer"
+            class="space-y-3"
+          ></div>
+
         </div>
-      </section>
-    </main>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <footer class="text-center py-8 mt-12 border-t border-gray-900">
-    <p class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
-      Coded with 🔥 Linuxxer, Idea: TrungKien
-    </p>
-  </footer>
+<script>
 
-  <script src="app.js"></script>
+/* eslint-disable */
+
+// =======================
+// SUPABASE
+// =======================
+
+const SUPABASE_URL =
+"https://ymqojrhnllaphkuhbcml.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_1e78hj6Gk9zSu5w6JI9M5A_OhreyjHJ";
+
+const mySupabase =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+// =======================
+// STUDENTS
+// =======================
+
+const STUDENT_LIST = [
+  "Nguyễn Quốc An",
+  "Dương Quỳnh Anh",
+  "Vũ Phương Anh",
+  "Tạ Khánh Băng",
+  "Hoàng Quỳnh Chi",
+  "Đỗ Linh Đan",
+  "Nguyễn Hoàng Dương",
+  "Nguyễn Hoàng Phi Dương",
+  "Nguyễn Thái Bình Dương",
+  "Phùng Ánh Dương",
+  "Bùi Ngân Giang",
+  "Đỗ Hương Giang",
+  "Nguyễn Hà Giang",
+  "Nguyễn Thị Trà Giang",
+  "Đỗ Hoàng Hải",
+  "Nguyễn Văn Hải",
+  "Dương Trung Hiếu",
+  "Ngô Duy Hưng",
+  "Dương Tuấn Huy",
+  "Nguyễn Ngọc Huy",
+  "Nguyễn Bảo Khánh",
+  "Phùng Duy Khánh",
+  "Phạm Nhật Trung Kiên",
+  "Ngô Duy Lân",
+  "Tăng Ngọc Linh",
+  "Phạm Nguyễn Hải Long",
+  "Hà Tuyết Mai",
+  "Nguyễn Hải Minh",
+  "Nguyễn Nguyệt Minh",
+  "Bùi Trà My",
+  "Đỗ Diễm Thảo My",
+  "Nguyễn Ngọc Trà My",
+  "Nguyễn Hải Nam",
+  "Nguyễn Nhật Nam",
+  "Bùi Kim Ngân",
+  "Bùi Thị Minh Ngọc",
+  "Dương Tâm Ngọc",
+  "Hoàng Như Ngọc",
+  "Tạ Hoàng Minh Ngọc",
+  "Nguyễn Thị Tuyết Nhung",
+  "Phùng Nhất Phi",
+  "Phùng Hải Phong",
+  "Vũ Tuấn Phong",
+  "Dương Hoàng Quân",
+  "Nguyễn Minh Quân (19/11)",
+  "Nguyễn Minh Quân (30/10)",
+  "Đỗ Hải Thanh",
+  "Bùi Anh Thư",
+  "Vũ Thu Thủy",
+  "Phùng Minh Trang",
+  "Nguyễn Tuấn Tú",
+  "Nguyễn Minh Tuấn",
+  "Phùng Mạnh Tùng"
+];
+
+const studentSelect =
+document.getElementById(
+  "studentSelect"
+);
+
+STUDENT_LIST.forEach((name) => {
+
+  const option =
+  document.createElement("option");
+
+  option.value = name;
+  option.textContent = name;
+
+  studentSelect.appendChild(option);
+});
+
+// =======================
+// VARIABLES
+// =======================
+
+let selectedRating = 0;
+
+const stars =
+document.querySelectorAll(".star");
+
+const ratingDisplay =
+document.getElementById(
+  "ratingDisplay"
+);
+
+const submitBtn =
+document.getElementById(
+  "submitBtn"
+);
+
+const nameInputWrapper =
+document.getElementById(
+  "nameInputWrapper"
+);
+
+const identityRadios =
+document.querySelectorAll(
+  'input[name="identityMode"]'
+);
+
+// =======================
+// STARS
+// =======================
+
+stars.forEach((star) => {
+
+  star.style.color = "#4b5563";
+
+  star.addEventListener(
+    "click",
+    () => {
+
+      selectedRating =
+      parseInt(
+        star.dataset.value
+      );
+
+      ratingDisplay.innerText =
+      `${selectedRating}/10★`;
+
+      stars.forEach((s) => {
+
+        if (
+          parseInt(s.dataset.value)
+          <= selectedRating
+        ) {
+
+          s.style.color =
+          "#facc15";
+
+        } else {
+
+          s.style.color =
+          "#4b5563";
+        }
+      });
+    }
+  );
+});
+
+// =======================
+// IDENTITY
+// =======================
+
+identityRadios.forEach((radio) => {
+
+  radio.addEventListener(
+    "change",
+    () => {
+
+      if (
+        radio.value === "public"
+        &&
+        radio.checked
+      ) {
+
+        nameInputWrapper
+        .classList
+        .remove("hidden");
+
+      } else {
+
+        nameInputWrapper
+        .classList
+        .add("hidden");
+      }
+    }
+  );
+});
+
+// =======================
+// SUBMIT
+// =======================
+
+submitBtn.addEventListener(
+  "click",
+  submitFeedback
+);
+
+async function submitFeedback() {
+
+  const studentName =
+  studentSelect.value;
+
+  const topic =
+  document.getElementById(
+    "topicSelect"
+  ).value;
+
+  const comment =
+  document.getElementById(
+    "reviewComment"
+  ).value;
+
+  const identityMode =
+  document.querySelector(
+    'input[name="identityMode"]:checked'
+  ).value;
+
+  let senderName =
+  "Ẩn danh";
+
+  if (
+    identityMode === "public"
+  ) {
+
+    senderName =
+    document.getElementById(
+      "senderName"
+    ).value || "Ẩn danh";
+  }
+
+  if (!studentName) {
+
+    alert("Chọn học sinh.");
+    return;
+  }
+
+  if (selectedRating === 0) {
+
+    alert("Chấm sao trước.");
+    return;
+  }
+
+  const { error } =
+  await mySupabase
+  .from("student_reviews")
+  .insert([
+    {
+      student_name:
+        studentName,
+
+      topic:
+        topic,
+
+      rating:
+        selectedRating,
+
+      comment:
+        comment,
+
+      sender_name:
+        senderName
+    }
+  ]);
+
+  if (error) {
+
+    console.log(error);
+
+    alert("Lỗi gửi.");
+    return;
+  }
+
+  alert("Đăng thành công 🔥");
+
+  document.getElementById(
+    "reviewComment"
+  ).value = "";
+
+  document.getElementById(
+    "senderName"
+  ).value = "";
+
+  selectedRating = 0;
+
+  ratingDisplay.innerText =
+  "0/10★";
+
+  stars.forEach((s) => {
+    s.style.color = "#4b5563";
+  });
+
+  loadFeedback();
+}
+
+// =======================
+// LOAD
+// =======================
+
+async function loadFeedback() {
+
+  const { data, error } =
+  await mySupabase
+  .from("student_reviews")
+  .select("*")
+  .order(
+    "created_at",
+    { ascending: false }
+  );
+
+  if (error) {
+
+    console.log(error);
+    return;
+  }
+
+  renderStats(data);
+  renderReviews(data);
+}
+
+// =======================
+// STATS
+// =======================
+
+function renderStats(data) {
+
+  const statsContainer =
+  document.getElementById(
+    "statsContainer"
+  );
+
+  statsContainer.innerHTML =
+  "";
+
+  const grouped = {};
+
+  data.forEach((item) => {
+
+    if (
+      !grouped[
+        item.student_name
+      ]
+    ) {
+
+      grouped[
+        item.student_name
+      ] = {
+        total: 0,
+        count: 0
+      };
+    }
+
+    grouped[
+      item.student_name
+    ].total += item.rating;
+
+    grouped[
+      item.student_name
+    ].count += 1;
+  });
+
+  const sorted =
+  Object.entries(grouped)
+  .map(([name, value]) => ({
+
+    name,
+
+    avg:
+      (
+        value.total
+        /
+        value.count
+      ).toFixed(1),
+
+    count:
+      value.count
+  }))
+  .sort(
+    (a, b) => b.avg - a.avg
+  );
+
+  sorted.forEach((item) => {
+
+    statsContainer.innerHTML += `
+      <div class="bg-gray-950 border border-gray-800 rounded-xl p-4">
+        <div class="flex justify-between items-center">
+
+          <div>
+            <div class="font-bold">
+              ${item.name}
+            </div>
+
+            <div class="text-xs text-gray-500">
+              ${item.count} đánh giá
+            </div>
+          </div>
+
+          <div class="text-yellow-400 font-black text-2xl">
+            ${item.avg}★
+          </div>
+
+        </div>
+      </div>
+    `;
+  });
+}
+
+// =======================
+// REVIEWS
+// =======================
+
+function renderReviews(data) {
+
+  const reviewsContainer =
+  document.getElementById(
+    "reviewsContainer"
+  );
+
+  reviewsContainer.innerHTML =
+  "";
+
+  data.forEach((item) => {
+
+    reviewsContainer.innerHTML += `
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4">
+
+        <div class="flex justify-between items-center mb-2">
+
+          <div>
+
+            <div class="font-bold text-pink-400">
+              ${item.student_name}
+            </div>
+
+            <div class="text-xs text-gray-500">
+              ${item.sender_name || "Ẩn danh"}
+            </div>
+
+          </div>
+
+          <div class="text-yellow-400 font-black">
+            ${item.rating}/10★
+          </div>
+
+        </div>
+
+        <div class="text-gray-300 text-sm">
+          ${item.comment || ""}
+        </div>
+
+      </div>
+    `;
+  });
+}
+
+// =======================
+// REALTIME
+// =======================
+
+mySupabase
+.channel("student_reviews")
+.on(
+  "postgres_changes",
+  {
+    event: "*",
+    schema: "public",
+    table: "student_reviews"
+  },
+  () => {
+    loadFeedback();
+  }
+)
+.subscribe();
+
+// =======================
+// START
+// =======================
+
+loadFeedback();
+
+</script>
+
 </body>
 </html>
