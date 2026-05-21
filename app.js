@@ -158,21 +158,24 @@ const { error } = await mySupabase
 .from("student_reviews")
 .insert([
   {
-    student_name:
-      document.getElementById("studentSelect").value,
+  student_name:
+    document.getElementById("studentSelect").value,
 
-    topic:
-      topicSelect.value,
+  student_class:
+    "8A1",
 
-    rating:
-      selectedRating,
+  topic:
+    topicSelect.value,
 
-    comment:
-      document.getElementById("reviewComment").value,
+  rating:
+    selectedRating,
 
-    sender_name:
-      senderName
-  },
+  comment:
+    document.getElementById("reviewComment").value,
+
+  sender_name:
+    senderName
+},
 ]);
 
   if (error) {
