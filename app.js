@@ -4,7 +4,7 @@ const SUPABASE_URL = "https://ymqojrhnllaphkuhbcml.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_1e78hj6Gk9zSu5w6JI9M5A_OhreyjHJ";
 
 const mySupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+alert("Đừng chấm bẩn bạn nhé!");
 const STUDENT_LIST = [
   "Nguyễn Quốc An",
   "Dương Quỳnh Anh",
@@ -142,7 +142,7 @@ function resetForm() {
 }
 
 async function submitFeedback() {
-
+  console.log("submit chạy");
   const studentName =
   studentSelect.value;
 
@@ -280,7 +280,6 @@ async function submitFeedback() {
 
   loadFeedback();
 }
-}
   const topic = topicSelect.value;
   const comment = reviewComment.value.trim();
   const identityMode = document.querySelector('input[name="identityMode"]:checked')?.value || "anonymous";
@@ -340,7 +339,6 @@ async function submitFeedback() {
   alert("Đăng thành công 🔥");
   resetForm();
   loadFeedback();
-}
 
 async function loadFeedback() {
   const { data, error } = await mySupabase
