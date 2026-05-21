@@ -142,19 +142,144 @@ function resetForm() {
 }
 
 async function submitFeedback() {
-  const studentName = studentSelect.value;
+
+  const studentName =
+  studentSelect.value;
+
+  const topic =
+  document.getElementById(
+    "topicSelect"
+  ).value;
+
+  const comment =
+  document.getElementById(
+    "reviewComment"
+  ).value.trim();
+
   const voteKey =
-`rated_${studentName}`;
+  `rated_${studentName}`;
 
-if (
-  localStorage.getItem(voteKey)
-) {
+  // CHẶN VOTE 2 LẦN
 
-  alert(
-    "Bạn đã đánh giá học sinh này rồi."
+  if (
+    localStorage.getItem(voteKey)
+  ) {
+
+    alert(
+      "Bạn đã đánh giá học sinh này rồi."
+    );
+
+    return;
+  }
+
+  // CHECK HỌC SINH
+
+  if (!studentName) {
+
+    alert(
+      "Chọn học sinh."
+    );
+
+    return;
+  }
+
+  // CHECK SAO
+
+  if (selectedRating === 0) {
+
+    alert(
+      "Chấm sao trước."
+    );
+
+    return;
+  }
+
+  // CHECK COMMENT
+
+  if (comment.length < 10) {
+
+    alert(
+      "Phải nhập ít nhất 10 ký tự."
+    );
+
+    return;
+  }
+
+  // DANH TÍNH
+
+  const identityMode =
+  document.querySelector(
+    'input[name="identityMode"]:checked'
+  ).value;
+
+  let senderName =
+  "Ẩn danh";
+
+  if (
+    identityMode === "public"
+  ) {
+
+    senderName =
+    document.getElementById(
+      "senderName"
+    ).value.trim()
+    || "Ẩn danh";
+  }
+
+  // INSERT DB
+
+  const { error } =
+  await mySupabase
+  .from("student_reviews")
+  .insert([
+    {
+      student_name:
+        studentName,
+
+      topic:
+        topic,
+
+      rating:
+        selectedRating,
+
+      comment:
+        comment,
+
+      sender_name:
+        senderName
+    }
+  ]);
+
+  // ERROR
+
+  if (error) {
+
+    console.log(error);
+
+    alert(
+      "Lỗi gửi đánh giá."
+    );
+
+    return;
+  }
+
+  // LƯU LOCALSTORAGE
+
+  localStorage.setItem(
+    voteKey,
+    "true"
   );
 
-  return;
+  // SUCCESS
+
+  alert(
+    "Đăng thành công 🔥"
+  );
+
+  resetForm();
+
+  loadFeedback();
+}
 }
   const topic = topicSelect.value;
   const comment = reviewComment.value.trim();
