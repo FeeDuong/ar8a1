@@ -1,288 +1,709 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RATING HỌC SINH 8A1</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body class="bg-gray-950 text-white min-h-screen p-5">
+
+  <div class="max-w-6xl mx-auto">
+
+    <h1 class="text-4xl font-black text-center mb-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-transparent bg-clip-text">
+      RATING HỌC SINH 8A1
+    </h1>
+
+    <p class="text-center text-gray-500 mb-8">
+      Hệ thống góp ý & đánh giá lớp học
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+
+      <!-- FORM -->
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+
+        <h2 class="text-xl font-bold text-pink-400">
+          Gửi đánh giá
+        </h2>
+
+        <!-- STUDENT -->
+        <div>
+          <label class="text-sm text-gray-400">
+            Chọn học sinh
+          </label>
+
+          <select
+            id="studentSelect"
+            class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl p-3"
+          >
+            <option value="">
+              -- Chọn học sinh --
+            </option>
+          </select>
+        </div>
+
+        <!-- TOPIC -->
+        <div>
+          <label class="text-sm text-gray-400">
+            Chủ đề
+          </label>
+
+          <select
+            id="topicSelect"
+            class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl p-3"
+          >
+            <option value="hoc_tap">
+              Học tập
+            </option>
+
+            <option value="noi_quy">
+              Nề nếp
+            </option>
+
+            <option value="hoat_dong">
+              Hoạt động lớp
+            </option>
+
+            <option value="giao_tiep">
+              Giao tiếp
+            </option>
+
+            <option value="khac">
+              Khác
+            </option>
+          </select>
+        </div>
+
+        <!-- STARS -->
+        <div>
+
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-400">
+              Chấm điểm
+            </span>
+
+            <span
+              id="ratingDisplay"
+              class="font-bold text-yellow-400"
+            >
+              0/10★
+            </span>
+          </div>
+
+          <div class="flex flex-wrap gap-1 text-3xl">
+
+            <span class="star cursor-pointer" data-value="1">★</span>
+            <span class="star cursor-pointer" data-value="2">★</span>
+            <span class="star cursor-pointer" data-value="3">★</span>
+            <span class="star cursor-pointer" data-value="4">★</span>
+            <span class="star cursor-pointer" data-value="5">★</span>
+            <span class="star cursor-pointer" data-value="6">★</span>
+            <span class="star cursor-pointer" data-value="7">★</span>
+            <span class="star cursor-pointer" data-value="8">★</span>
+            <span class="star cursor-pointer" data-value="9">★</span>
+            <span class="star cursor-pointer" data-value="10">★</span>
+
+          </div>
+        </div>
+
+        <!-- IDENTITY -->
+        <div class="space-y-2">
+
+          <div class="text-sm text-gray-400">
+            Danh tính
+          </div>
+
+          <div class="flex gap-4">
+
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="identityMode"
+                value="anonymous"
+                checked
+              />
+
+              <span>Ẩn danh</span>
+            </label>
+
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="identityMode"
+                value="public"
+              />
+
+              <span>Hiện tên</span>
+            </label>
+
+          </div>
+
+          <div
+            id="nameInputWrapper"
+            class="hidden"
+          >
+            <input
+              type="text"
+              id="senderName"
+              placeholder="Tên của bạn..."
+              class="w-full bg-gray-800 border border-gray-700 rounded-xl p-3"
+            />
+          </div>
+
+        </div>
+
+        <!-- COMMENT -->
+        <div>
+          <label class="text-sm text-gray-400">
+            Nội dung
+          </label>
+
+          <textarea
+            id="reviewComment"
+            rows="5"
+            placeholder="Nhập góp ý..."
+            class="w-full mt-1 bg-gray-800 border border-gray-700 rounded-xl p-3 resize-none"
+          ></textarea>
+        </div>
+
+        <!-- BUTTON -->
+        <button
+          id="submitBtn"
+          class="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:opacity-90 transition rounded-xl py-3 font-bold"
+        >
+          Gửi đánh giá
+        </button>
+
+      </div>
+
+      <!-- RIGHT -->
+      <div class="md:col-span-2 space-y-6">
+
+        <!-- STATS -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+
+          <h2 class="text-xl font-bold text-yellow-400 mb-4">
+            Bảng xếp hạng
+          </h2>
+
+          <div
+            id="statsContainer"
+            class="grid md:grid-cols-2 gap-3"
+          ></div>
+
+        </div>
+
+        <!-- REVIEWS -->
+        <div>
+
+          <h2 class="text-xl font-bold text-pink-400 mb-4">
+            Bình luận công khai
+          </h2>
+
+          <div
+            id="reviewsContainer"
+            class="space-y-3"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+
 /* eslint-disable */
 
-const SUPABASE_URL = "https://ymqojrhnllaphkuhbcml.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_1e78hj6Gk9zSu5w6JI9M5A_OhreyjHJ";
+// =======================
+// SUPABASE
+// =======================
 
-const mySupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_URL =
+"https://ymqojrhnllaphkuhbcml.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"YOUR_SUPABASE_KEY";
+
+const mySupabase =
+supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+// =======================
+// STUDENTS
+// =======================
+
 const STUDENT_LIST = [
-    "Nguyễn Quốc An",
-    "Dương Quỳnh Anh",
-    "Vũ Phương Anh",
-    "Tạ Khánh Băng",
-    "Hoàng Quỳnh Chi",
-    "Đỗ Linh Đan",
-    "Nguyễn Hoàng Dương",
-    "Nguyễn Hoàng Phi Dương",
-    "Nguyễn Thái Bình Dương",
-    "Phùng Ánh Dương",
-    "Bùi Ngân Giang",
-    "Đỗ Hương Giang",
-    "Nguyễn Hà Giang",
-    "Nguyễn Thị Trà Giang",
-    "Đỗ Hoàng Hải",
-    "Nguyễn Văn Hải",
-    "Dương Trung Hiếu",
-    "Ngô Duy Hưng",
-    "Dương Tuấn Huy",
-    "Nguyễn Ngọc Huy",
-    "Nguyễn Bảo Khánh",
-    "Phùng Duy Khánh",
-    "Phạm Nhật Trung Kiên",
-    "Ngô Duy Lân",
-    "Tăng Ngọc Linh",
-    "Phạm Nguyễn Hải Long",
-    "Hà Tuyết Mai",
-    "Nguyễn Hải Minh",
-    "Nguyễn Nguyệt Minh",
-    "Bùi Trà My",
-    "Đỗ Diễm Thảo My",
-    "Nguyễn Ngọc Trà My",
-    "Nguyễn Hải Nam",
-    "Nguyễn Nhật Nam",
-    "Bùi Kim Ngân",
-    "Bùi Thị Minh Ngọc",
-    "Dương Tâm Ngọc",
-    "Hoàng Như Ngọc",
-    "Tạ Hoàng Minh Ngọc",
-    "Nguyễn Thị Tuyết Nhung",
-    "Phùng Nhất Phi",
-    "Phùng Hải Phong",
-    "Vũ Tuấn Phong",
-    "Dương Hoàng Quân",
-    "Nguyễn Minh Quân (19/11)",
-    "Nguyễn Minh Quân (30/10)",
-    "Đỗ Hải Thanh",
-    "Bùi Anh Thư",
-    "Vũ Thu Thủy",
-    "Phùng Minh Trang",
-    "Nguyễn Tuấn Tú",
-    "Nguyễn Minh Tuấn",
-    "Phùng Mạnh Tùng"
+  "Nguyễn Quốc An",
+  "Dương Quỳnh Anh",
+  "Vũ Phương Anh",
+  "Tạ Khánh Băng",
+  "Hoàng Quỳnh Chi",
+  "Đỗ Linh Đan",
+  "Nguyễn Hoàng Dương",
+  "Nguyễn Hoàng Phi Dương",
+  "Nguyễn Thái Bình Dương",
+  "Phùng Ánh Dương",
+  "Bùi Ngân Giang",
+  "Đỗ Hương Giang",
+  "Nguyễn Hà Giang",
+  "Nguyễn Thị Trà Giang",
+  "Đỗ Hoàng Hải",
+  "Nguyễn Văn Hải",
+  "Dương Trung Hiếu",
+  "Ngô Duy Hưng",
+  "Dương Tuấn Huy",
+  "Nguyễn Ngọc Huy",
+  "Nguyễn Bảo Khánh",
+  "Phùng Duy Khánh",
+  "Phạm Nhật Trung Kiên",
+  "Ngô Duy Lân",
+  "Tăng Ngọc Linh",
+  "Phạm Nguyễn Hải Long",
+  "Hà Tuyết Mai",
+  "Nguyễn Hải Minh",
+  "Nguyễn Nguyệt Minh",
+  "Bùi Trà My",
+  "Đỗ Diễm Thảo My",
+  "Nguyễn Ngọc Trà My",
+  "Nguyễn Hải Nam",
+  "Nguyễn Nhật Nam",
+  "Bùi Kim Ngân",
+  "Bùi Thị Minh Ngọc",
+  "Dương Tâm Ngọc",
+  "Hoàng Như Ngọc",
+  "Tạ Hoàng Minh Ngọc",
+  "Nguyễn Thị Tuyết Nhung",
+  "Phùng Nhất Phi",
+  "Phùng Hải Phong",
+  "Vũ Tuấn Phong",
+  "Dương Hoàng Quân",
+  "Nguyễn Minh Quân (19/11)",
+  "Nguyễn Minh Quân (30/10)",
+  "Đỗ Hải Thanh",
+  "Bùi Anh Thư",
+  "Vũ Thu Thủy",
+  "Phùng Minh Trang",
+  "Nguyễn Tuấn Tú",
+  "Nguyễn Minh Tuấn",
+  "Phùng Mạnh Tùng"
 ];
+
 const studentSelect =
-document.getElementById("studentSelect");
+document.getElementById(
+  "studentSelect"
+);
 
-STUDENT_LIST.forEach(name => {
+STUDENT_LIST.forEach((name) => {
 
-    const option =
-    document.createElement("option");
+  const option =
+  document.createElement("option");
 
-    option.value = name;
-    option.textContent = name;
+  option.value = name;
+  option.textContent = name;
 
-    studentSelect.appendChild(option);
+  studentSelect.appendChild(option);
 });
 
-const TOPIC_LABELS = {
-  hoc_tap: "Học tập",
-  noi_quy: "Nề nếp / nội quy",
-  hoat_dong: "Hoạt động lớp",
-  giao_tiep: "Giao tiếp / ứng xử",
-  khac: "Khác",
-};
+// =======================
+// VARIABLES
+// =======================
 
 let selectedRating = 0;
 
-const stars = document.querySelectorAll(".star");
-const ratingDisplay = document.getElementById("ratingDisplay");
-const nameInputWrapper = document.getElementById("nameInputWrapper");
-const identityRadios = document.querySelectorAll('input[name="identityMode"]');
-const submitBtn = document.getElementById("submitBtn");
+const stars =
+document.querySelectorAll(".star");
 
-document.getElementById("reviewComment").value = "";
+const ratingDisplay =
+document.getElementById(
+  "ratingDisplay"
+);
+
+const submitBtn =
+document.getElementById(
+  "submitBtn"
+);
+
+const nameInputWrapper =
+document.getElementById(
+  "nameInputWrapper"
+);
+
+const identityRadios =
+document.querySelectorAll(
+  'input[name="identityMode"]'
+);
+
+// =======================
+// STARS
+// =======================
 
 stars.forEach((star) => {
+
   star.style.color = "#4b5563";
-  star.style.transition = "0.15s";
 
-  star.addEventListener("click", () => {
-    selectedRating = parseInt(star.dataset.value, 10);
-    ratingDisplay.innerText = `${selectedRating}/10★`;
+  star.addEventListener(
+    "click",
+    () => {
 
-    stars.forEach((s) => {
-      if (parseInt(s.dataset.value, 10) <= selectedRating) {
-        s.style.color = "#facc15";
-        s.style.transform = "scale(1.15)";
-      } else {
-        s.style.color = "#4b5563";
-        s.style.transform = "scale(1)";
-      }
-    });
-  });
+      selectedRating =
+      parseInt(
+        star.dataset.value
+      );
+
+      ratingDisplay.innerText =
+      `${selectedRating}/10★`;
+
+      stars.forEach((s) => {
+
+        if (
+          parseInt(s.dataset.value)
+          <= selectedRating
+        ) {
+
+          s.style.color =
+          "#facc15";
+
+        } else {
+
+          s.style.color =
+          "#4b5563";
+        }
+      });
+    }
+  );
 });
+
+// =======================
+// IDENTITY
+// =======================
 
 identityRadios.forEach((radio) => {
-  radio.addEventListener("change", () => {
-    if (radio.value === "public" && radio.checked) {
-      nameInputWrapper.classList.remove("hidden");
-    } else if (radio.value === "anonymous" && radio.checked) {
-      nameInputWrapper.classList.add("hidden");
+
+  radio.addEventListener(
+    "change",
+    () => {
+
+      if (
+        radio.value === "public"
+        &&
+        radio.checked
+      ) {
+
+        nameInputWrapper
+        .classList
+        .remove("hidden");
+
+      } else {
+
+        nameInputWrapper
+        .classList
+        .add("hidden");
+      }
     }
-  });
+  );
 });
 
-submitBtn.addEventListener("click", submitFeedback);
+// =======================
+// SUBMIT
+// =======================
+
+submitBtn.addEventListener(
+  "click",
+  submitFeedback
+);
 
 async function submitFeedback() {
-  const topic = document.getElementById("topicSelect").value;
-  const comment = document.getElementById("reviewComment").value.trim();
-  const identityMode = document.querySelector('input[name="identityMode"]:checked').value;
-  const studentName = document.getElementById("studentSelect").value;
 
-  let senderName = "Ẩn danh";
-  if (identityMode === "public") {
-    senderName = document.getElementById("senderName").value.trim() || "Ẩn danh";
+  const studentName =
+  studentSelect.value;
+
+  const topic =
+  document.getElementById(
+    "topicSelect"
+  ).value;
+
+  const comment =
+  document.getElementById(
+    "reviewComment"
+  ).value;
+
+  const identityMode =
+  document.querySelector(
+    'input[name="identityMode"]:checked'
+  ).value;
+
+  let senderName =
+  "Ẩn danh";
+
+  if (
+    identityMode === "public"
+  ) {
+
+    senderName =
+    document.getElementById(
+      "senderName"
+    ).value || "Ẩn danh";
   }
 
-  if (!topic) {
-    alert("Hãy chọn chủ đề.");
+  if (!studentName) {
+
+    alert("Chọn học sinh.");
     return;
   }
 
   if (selectedRating === 0) {
-    alert("Hãy chấm sao.");
+
+    alert("Chấm sao trước.");
     return;
   }
 
-  if (comment.length < 2) {
-    alert("Nhập nội dung góp ý.");
-    return;
-  }
+  const { error } =
+  await mySupabase
+  .from("student_reviews")
+  .insert([
+    {
+      student_name:
+        studentName,
 
-  if (comment.length > 400) {
-    alert("Nội dung quá dài.");
-    return;
-  }
+      topic:
+        topic,
 
-const { error } = await mySupabase
-.from("student_reviews")
-.insert([
-  {
-  student_name:
-    document.getElementById("studentSelect").value,
+      rating:
+        selectedRating,
 
-  student_class:
-    "8A1",
+      comment:
+        comment,
 
-  topic:
-    topicSelect.value,
-
-  rating:
-    selectedRating,
-
-  comment:
-    document.getElementById("reviewComment").value,
-
-  sender_name:
-    senderName
-},
-]);
+      sender_name:
+        senderName
+    }
+  ]);
 
   if (error) {
+
     console.log(error);
-    alert("Lỗi gửi góp ý.");
+
+    alert("Lỗi gửi.");
     return;
   }
 
-  document.getElementById("reviewComment").value = "";
-  document.getElementById("senderName").value = "";
+  alert("Đăng thành công 🔥");
+
+  document.getElementById(
+    "reviewComment"
+  ).value = "";
+
+  document.getElementById(
+    "senderName"
+  ).value = "";
+
   selectedRating = 0;
-  ratingDisplay.innerText = "0/10★";
+
+  ratingDisplay.innerText =
+  "0/10★";
+
   stars.forEach((s) => {
     s.style.color = "#4b5563";
-    s.style.transform = "scale(1)";
   });
 
   loadFeedback();
-  alert("Đã gửi góp ý.");
 }
 
+// =======================
+// LOAD
+// =======================
+
 async function loadFeedback() {
-  const { data, error } = await mySupabase
-    .from("student_reviews")
-    .select("*")
-    .order("created_at", { ascending: false });
+
+  const { data, error } =
+  await mySupabase
+  .from("student_reviews")
+  .select("*")
+  .order(
+    "created_at",
+    { ascending: false }
+  );
 
   if (error) {
+
     console.log(error);
     return;
   }
 
-  renderStats(data || []);
-  renderReviews(data || []);
+  renderStats(data);
+  renderReviews(data);
 }
+
+// =======================
+// STATS
+// =======================
 
 function renderStats(data) {
-  const statsContainer = document.getElementById("statsContainer");
-  statsContainer.innerHTML = "";
 
-  const stats = {};
+  const statsContainer =
+  document.getElementById(
+    "statsContainer"
+  );
 
-  Object.keys(TOPIC_LABELS).forEach((k) => {
-    stats[k] = { total: 0, count: 0 };
-  });
+  statsContainer.innerHTML =
+  "";
+
+  const grouped = {};
 
   data.forEach((item) => {
-    if (!stats[item.topic]) {
-      stats[item.topic] = { total: 0, count: 0 };
+
+    if (
+      !grouped[
+        item.student_name
+      ]
+    ) {
+
+      grouped[
+        item.student_name
+      ] = {
+        total: 0,
+        count: 0
+      };
     }
-    stats[item.topic].total += item.rating;
-    stats[item.topic].count += 1;
+
+    grouped[
+      item.student_name
+    ].total += item.rating;
+
+    grouped[
+      item.student_name
+    ].count += 1;
   });
 
-  const sorted = Object.entries(stats)
-    .map(([key, value]) => ({
-      key,
-      label: TOPIC_LABELS[key] || key,
-      avg: value.count ? (value.total / value.count).toFixed(1) : "0.0",
-      count: value.count,
-    }))
-    .sort((a, b) => b.avg - a.avg);
+  const sorted =
+  Object.entries(grouped)
+  .map(([name, value]) => ({
+
+    name,
+
+    avg:
+      (
+        value.total
+        /
+        value.count
+      ).toFixed(1),
+
+    count:
+      value.count
+  }))
+  .sort(
+    (a, b) => b.avg - a.avg
+  );
 
   sorted.forEach((item) => {
+
     statsContainer.innerHTML += `
-      <div class="bg-gray-950 border border-gray-800 rounded-xl p-3">
-        <div class="flex justify-between items-center gap-3">
+      <div class="bg-gray-950 border border-gray-800 rounded-xl p-4">
+        <div class="flex justify-between items-center">
+
           <div>
-            <div class="font-black text-white text-sm">${item.label}</div>
-            <div class="text-xs text-gray-500">${item.count} lượt góp ý</div>
+            <div class="font-bold">
+              ${item.name}
+            </div>
+
+            <div class="text-xs text-gray-500">
+              ${item.count} đánh giá
+            </div>
           </div>
-          <div class="text-yellow-400 font-black text-xl">${item.avg}★</div>
+
+          <div class="text-yellow-400 font-black text-2xl">
+            ${item.avg}★
+          </div>
+
         </div>
       </div>
     `;
   });
 }
+
+// =======================
+// REVIEWS
+// =======================
 
 function renderReviews(data) {
-  const reviewsContainer = document.getElementById("reviewsContainer");
-  reviewsContainer.innerHTML = "";
+
+  const reviewsContainer =
+  document.getElementById(
+    "reviewsContainer"
+  );
+
+  reviewsContainer.innerHTML =
+  "";
 
   data.forEach((item) => {
-    const topicLabel = TOPIC_LABELS[item.topic] || item.topic || "Khác";
 
     reviewsContainer.innerHTML += `
-      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 shadow-lg">
+      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4">
+
         <div class="flex justify-between items-center mb-2">
+
           <div>
-            <div class="font-bold text-pink-400">${item.sender_name || "Ẩn danh"}</div>
-            <div class="text-xs text-gray-500">${topicLabel}</div>
+
+            <div class="font-bold text-pink-400">
+              ${item.student_name}
+            </div>
+
+            <div class="text-xs text-gray-500">
+              ${item.sender_name || "Ẩn danh"}
+            </div>
+
           </div>
-          <div class="text-yellow-400 font-black">${item.rating}/10★</div>
+
+          <div class="text-yellow-400 font-black">
+            ${item.rating}/10★
+          </div>
+
         </div>
-        <div class="text-sm text-gray-300 break-words">${item.comment || ""}</div>
+
+        <div class="text-gray-300 text-sm">
+          ${item.comment || ""}
+        </div>
+
       </div>
     `;
   });
 }
 
+// =======================
+// REALTIME
+// =======================
+
 mySupabase
-  .channel("student_reviews")
-  .on(
-    "postgres_changes",
-    { event: "*", schema: "public", table: "student_reviews" },
-    () => loadFeedback()
-  )
-  .subscribe();
+.channel("student_reviews")
+.on(
+  "postgres_changes",
+  {
+    event: "*",
+    schema: "public",
+    table: "student_reviews"
+  },
+  () => {
+    loadFeedback();
+  }
+)
+.subscribe();
+
+// =======================
+// START
+// =======================
 
 loadFeedback();
+
+</script>
+
+</body>
+</html>
