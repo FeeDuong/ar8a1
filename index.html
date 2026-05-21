@@ -425,6 +425,19 @@ async function submitFeedback() {
 
   const studentName =
   studentSelect.value;
+  const voteKey =
+`rated_${studentName}`;
+
+if (
+  localStorage.getItem(voteKey)
+) {
+
+  alert(
+    "Bạn đã đánh giá học sinh này rồi."
+  );
+
+  return;
+}
 
   const topic =
   document.getElementById(
@@ -704,7 +717,7 @@ mySupabase
 loadFeedback();
 
 </script>
-<footer class="mt-16 text-center border-t border-gray-800 pt-6">
+<header class="mt-16 text-center border-t border-gray-800 pt-6">
 
   <p class="text-sm text-gray-500">
     Code by
@@ -720,6 +733,6 @@ loadFeedback();
     </span>
   </p>
 
-</footer>
+</header>
 </body>
 </html>

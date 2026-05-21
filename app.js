@@ -176,11 +176,17 @@ if (
   }
 
   if (selectedRating === 0) {
-    alert("Chấm sao trước.");
-    return;
+    if (comment.length < 10) {
+
+  alert(
+    "Phải nhập lời đánh giá tối thiểu 10 ký tự."
+  );
+
+  return;
+}
   }
 
-  if (comment.length < 2) {
+  if (comment.length < 10) {
     alert("Nhập nội dung góp ý.");
     return;
   }
@@ -205,10 +211,7 @@ if (
     alert("Lỗi gửi.");
     return;
   }
-localStorage.setItem(
-  voteKey,
-  "true"
-);
+  localStorage.setItem(voteKey, "true");
   alert("Đăng thành công 🔥");
   resetForm();
   loadFeedback();
