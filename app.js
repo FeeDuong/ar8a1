@@ -143,6 +143,19 @@ function resetForm() {
 
 async function submitFeedback() {
   const studentName = studentSelect.value;
+  const voteKey =
+`rated_${studentName}`;
+
+if (
+  localStorage.getItem(voteKey)
+) {
+
+  alert(
+    "Bạn đã đánh giá học sinh này rồi."
+  );
+
+  return;
+}
   const topic = topicSelect.value;
   const comment = reviewComment.value.trim();
   const identityMode = document.querySelector('input[name="identityMode"]:checked')?.value || "anonymous";
@@ -192,7 +205,10 @@ async function submitFeedback() {
     alert("Lỗi gửi.");
     return;
   }
-
+localStorage.setItem(
+  voteKey,
+  "true"
+);
   alert("Đăng thành công 🔥");
   resetForm();
   loadFeedback();
