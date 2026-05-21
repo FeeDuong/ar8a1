@@ -425,19 +425,6 @@ async function submitFeedback() {
 
   const studentName =
   studentSelect.value;
-  const voteKey =
-`rated_${studentName}`;
-
-if (
-  localStorage.getItem(voteKey)
-) {
-
-  alert(
-    "Bạn đã đánh giá học sinh này rồi."
-  );
-
-  return;
-}
 
   const topic =
   document.getElementById(
