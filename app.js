@@ -127,6 +127,7 @@ async function submitFeedback() {
   const topic = document.getElementById("topicSelect").value;
   const comment = document.getElementById("reviewComment").value.trim();
   const identityMode = document.querySelector('input[name="identityMode"]:checked').value;
+  const studentName = document.getElementById("studentSelect").value;
 
   let senderName = "Ẩn danh";
   if (identityMode === "public") {
@@ -153,7 +154,7 @@ async function submitFeedback() {
     return;
   }
 
-  const { error } = await mySupabase.from("student_feedback").insert([
+  const { error } = await mySupabase.from("student_reviews").insert([
     {
       topic,
       sender_name: senderName,
@@ -183,7 +184,7 @@ async function submitFeedback() {
 
 async function loadFeedback() {
   const { data, error } = await mySupabase
-    .from("student_feedback")
+    .from("student_reviews")
     .select("*")
     .order("created_at", { ascending: false });
 
@@ -261,10 +262,10 @@ function renderReviews(data) {
 }
 
 mySupabase
-  .channel("student_feedback")
+  .channel("student_reviews")
   .on(
     "postgres_changes",
-    { event: "*", schema: "public", table: "student_feedback" },
+    { event: "*", schema: "public", table: "student_reviews" },
     () => loadFeedback()
   )
   .subscribe();
