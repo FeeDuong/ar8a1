@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Góp Ý Lớp Học 8A1</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.4/dist/umd/supabase.js"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans min-h-screen p-4 md:p-8">
+  <div class="max-w-5xl mx-auto space-y-6">
+    <header class="text-center space-y-2">
+      <h1 class="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-red-500 to-orange-400 tracking-wider">
+        GÓP Ý LỚP HỌC 8A1
+      </h1>
+      <p class="text-xs md:text-sm text-gray-400 font-mono">Ẩn danh hoặc hiện tên · lưu trên Supabase</p>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section class="md:col-span-1 bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-2xl h-fit space-y-4">
+        <h2 class="text-lg font-bold text-pink-500 flex items-center gap-2">📝 Gửi góp ý</h2>
+
+        <div class="space-y-1">
+          <label class="text-xs text-gray-400 font-semibold">Chủ đề:</label>
+          <select id="topicSelect" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-2.5 text-sm text-gray-200 focus:outline-none focus:border-pink-500">
+            <option value="hoc_tap">Học tập</option>
+            <option value="noi_quy">Nề nếp / nội quy</option>
+            <option value="hoat_dong">Hoạt động lớp</option>
+            <option value="giao_tiep">Giao tiếp / ứng xử</option>
+            <option value="khac">Khác</option>
+          </select>
+        </div>
+
+        <div class="space-y-2 p-3 bg-gray-950 rounded-xl border border-gray-800">
+          <label class="text-xs text-gray-400 font-semibold block">Danh tính:</label>
+          <div class="flex items-center gap-4">
+            <label class="inline-flex items-center cursor-pointer text-sm">
+              <input type="radio" name="identityMode" value="anonymous" checked class="sr-only peer">
+              <div class="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 peer-checked:bg-purple-500/20 peer-checked:border-purple-500 peer-checked:text-purple-400 transition-all font-bold">
+                🕵️ Ẩn danh
+              </div>
+            </label>
+            <label class="inline-flex items-center cursor-pointer text-sm">
+              <input type="radio" name="identityMode" value="public" class="sr-only peer">
+              <div class="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 peer-checked:bg-green-500/20 peer-checked:border-green-500 peer-checked:text-green-400 transition-all font-bold">
+                👤 Hiện tên
+              </div>
+            </label>
+          </div>
+          <div id="nameInputWrapper" class="hidden mt-2">
+            <input type="text" id="senderName" placeholder="Nhập tên..." class="w-full bg-gray-800 border border-gray-700 rounded-lg p-2 text-xs text-gray-200 focus:outline-none focus:border-green-500">
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs text-gray-400 font-semibold">Số sao:</label>
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs text-gray-500">Chạm sao để đánh giá</span>
+            <span id="ratingDisplay" class="text-sm font-black text-yellow-500 font-mono bg-gray-950 px-2 py-0.5 rounded border border-gray-800">0/10★</span>
+          </div>
+          <div id="ratingStars" class="flex flex-wrap gap-1 text-2xl cursor-pointer py-3 select-none justify-center bg-gray-950 rounded-xl p-2 border border-gray-800 shadow-inner">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+            <span class="star" data-value="6">★</span>
+            <span class="star" data-value="7">★</span>
+            <span class="star" data-value="8">★</span>
+            <span class="star" data-value="9">★</span>
+            <span class="star" data-value="10">★</span>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs text-gray-400 font-semibold">Nội dung góp ý:</label>
+          <textarea id="reviewComment" rows="5" placeholder="Viết góp ý lịch sự, mang tính xây dựng..." class="w-full bg-gray-800 border border-gray-700 rounded-xl p-2.5 text-sm text-gray-200 focus:outline-none focus:border-pink-500 resize-none"></textarea>
+        </div>
+
+        <button id="submitBtn" class="w-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-lg shadow-pink-500/20 cursor-pointer">
+          Gửi Góp Ý
+        </button>
+      </section>
+
+      <section class="md:col-span-2 space-y-6">
+        <div class="bg-gray-900 p-5 rounded-2xl border border-gray-800 shadow-2xl space-y-3">
+          <h2 class="text-lg font-bold text-yellow-500">📊 Tổng hợp theo chủ đề</h2>
+          <div id="statsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[220px] overflow-y-auto pr-1"></div>
+        </div>
+
+        <div class="space-y-3">
+          <h2 class="text-lg font-bold text-pink-500">💬 Các góp ý mới nhất</h2>
+          <div id="reviewsContainer" class="space-y-3 max-h-[450px] overflow-y-auto pr-2"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="text-center py-8 mt-12 border-t border-gray-900">
+    <p class="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+      Coded with 🔥 Linuxxer, Idea: TrungKien
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
