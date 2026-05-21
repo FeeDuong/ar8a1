@@ -154,24 +154,26 @@ async function submitFeedback() {
     return;
   }
 
-  const { error } = await mySupabase.from("student_reviews").insert([
-    {
-     student_name:
-        document.getElementById("studentSelect").value,
+const { error } = await mySupabase
+.from("student_reviews")
+.insert([
+  {
+    student_name:
+      document.getElementById("studentSelect").value,
 
-        topic:
-        topicSelect.value,
+    topic:
+      topicSelect.value,
 
-        rating:
-        selectedRating,
+    rating:
+      selectedRating,
 
-        comment:
-        document.getElementById("reviewComment").value
+    comment:
+      document.getElementById("reviewComment").value,
 
-        sender_name:
-        senderName
-    },
-  ]);
+    sender_name:
+      senderName
+  },
+]);
 
   if (error) {
     console.log(error);
