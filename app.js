@@ -156,10 +156,20 @@ async function submitFeedback() {
 
   const { error } = await mySupabase.from("student_reviews").insert([
     {
-      topic,
-      sender_name: senderName,
-      rating: selectedRating,
-      comment,
+     student_name:
+        studentSelect.value,
+
+        topic:
+        topicSelect.value,
+
+        rating:
+        selectedRating,
+
+        comment:
+        commentInput.value,
+
+        sender_name:
+        senderName
     },
   ]);
 
