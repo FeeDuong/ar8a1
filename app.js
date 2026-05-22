@@ -19,8 +19,8 @@ supabase.createClient(
 // ======================
 // ADMIN
 // ======================
-
-const IS_ADMIN = true;
+let IS_ADMIN = false;
+const ADMIN_PASSWORD = "linuxxer123";
 
 // ======================
 // STUDENTS
@@ -163,7 +163,41 @@ const submitBtn =
 document.getElementById(
   "submitBtn"
 );
+const adminBtn =
+document.getElementById(
+  "adminLoginBtn"
+);
 
+adminBtn?.addEventListener(
+  "click",
+  () => {
+
+    const password =
+    prompt(
+      "Nhập mật khẩu admin:"
+    );
+
+    if (
+      password ===
+      "linuxxer123"
+    ) {
+
+      IS_ADMIN = true;
+
+      alert(
+        "Đăng nhập admin thành công."
+      );
+
+      loadFeedback();
+
+    } else {
+
+      alert(
+        "Sai mật khẩu."
+      );
+    }
+  }
+);
 const reviewsContainer =
 document.getElementById(
   "reviewsContainer"
