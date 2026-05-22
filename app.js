@@ -1,10 +1,28 @@
 /* eslint-disable */
-
+const IS_ADMIN = true;
 const SUPABASE_URL = "https://ymqojrhnllaphkuhbcml.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_1e78hj6Gk9zSu5w6JI9M5A_OhreyjHJ";
-
-const mySupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 alert("Đừng chấm bẩn bạn nhé!");
+const mySupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// =======================
+// DEVICE ID
+// =======================
+supabase.auth.signInWithPassword()
+let deviceId =
+localStorage.getItem(
+  "device_id"
+);
+
+if (!deviceId) {
+
+  deviceId =
+  crypto.randomUUID();
+
+  localStorage.setItem(
+    "device_id",
+    deviceId
+  );
+}
 const STUDENT_LIST = [
   "Nguyễn Quốc An",
   "Dương Quỳnh Anh",
@@ -142,7 +160,9 @@ function resetForm() {
 }
 
 async function submitFeedback() {
+
   console.log("submit chạy");
+
   const studentName =
   studentSelect.value;
 
@@ -158,6 +178,46 @@ async function submitFeedback() {
 
   const voteKey =
   `rated_${studentName}`;
+
+  // =======================
+  // COOLDOWN 30s
+  // =======================
+
+  const lastSubmit =
+  localStorage.getItem(
+    "last_submit_time"
+  );
+
+  if (lastSubmit) {
+
+    const diff =
+    Date.now() -
+    parseInt(lastSubmit);
+
+    if (diff < 30000) {
+
+      alert(
+        "Chờ 30 giây trước khi gửi tiếp."
+      );
+
+      return;
+    }
+  }
+
+  // =======================
+  // CHECK ĐÃ VOTE CHƯA
+  // =======================
+
+  if (
+    localStorage.getItem(voteKey)
+  ) {
+
+    alert(
+      "Bạn đã đánh giá học sinh này rồi."
+    );
+
+    return;
+  }
 
   // CHẶN VOTE 2 LẦN
 
@@ -228,27 +288,30 @@ async function submitFeedback() {
 
   // INSERT DB
 
-  const { error } =
-  await mySupabase
-  .from("student_reviews")
-  .insert([
-    {
-      student_name:
-        studentName,
+const { error } =
+await mySupabase
+.from("student_reviews")
+.insert([
+  {
+    student_name:
+      studentName,
 
-      topic:
-        topic,
+    topic:
+      topic,
 
-      rating:
-        selectedRating,
+    rating:
+      selectedRating,
 
-      comment:
-        comment,
+    comment:
+      comment,
 
-      sender_name:
-        senderName
-    }
-  ]);
+    sender_name:
+      senderName,
+
+    reviewer_device_id:
+      deviceId
+  }
+]);
 
   // ERROR
 
@@ -265,10 +328,15 @@ async function submitFeedback() {
 
   // LƯU LOCALSTORAGE
 
-  localStorage.setItem(
-    voteKey,
-    "true"
-  );
+ localStorage.setItem(
+  voteKey,
+  "true"
+);
+
+localStorage.setItem(
+  "last_submit_time",
+  Date.now()
+);
 
   // SUCCESS
 
@@ -350,9 +418,144 @@ async function loadFeedback() {
     console.log(error);
     return;
   }
+renderOverview(data || []);
 
-  renderStats(data || []);
-  renderReviews(data || []);
+renderStats(data || []);
+
+renderTopStudents(data || []);
+
+renderReviews(data || []);
+  function renderTopStudents(data) {
+
+  const container =
+  document.getElementById(
+    "topStudentsContainer"
+  );
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const stats = {};
+
+  data.forEach(item => {
+
+    if (
+      !stats[item.student_name]
+    ) {
+
+      stats[item.student_name] = {
+        total: 0,
+        count: 0
+      };
+    }
+
+    stats[item.student_name]
+    .total += item.rating;
+
+    stats[item.student_name]
+    .count += 1;
+  });
+
+  const sorted =
+  Object.entries(stats)
+
+  .map(([name, value]) => ({
+
+    name,
+
+    avg:
+      (
+        value.total /
+        value.count
+      ).toFixed(1),
+
+    count:
+      value.count
+  }))
+
+  .sort(
+    (a, b) =>
+      b.avg - a.avg
+  )
+
+  .slice(0, 5);
+
+  const medals = [
+    "🥇",
+    "🥈",
+    "🥉",
+    "🏅",
+    "🏅"
+  ];
+
+  sorted.forEach(
+    (student, index) => {
+
+      container.innerHTML += `
+        <div
+          class="
+            bg-gray-950
+            border border-gray-800
+            rounded-2xl
+            p-4
+            flex
+            justify-between
+            items-center
+            hover:border-yellow-500
+            transition-all
+          "
+        >
+
+          <div
+            class="flex items-center gap-3"
+          >
+
+            <div
+              class="text-2xl"
+            >
+              ${medals[index]}
+            </div>
+
+            <div>
+
+              <div
+                class="
+                  font-bold
+                  text-white
+                "
+              >
+                ${student.name}
+              </div>
+
+              <div
+                class="
+                  text-xs
+                  text-gray-500
+                "
+              >
+                ${student.count}
+                đánh giá
+              </div>
+
+            </div>
+
+          </div>
+
+          <div
+            class="
+              text-yellow-400
+              font-black
+              text-xl
+            "
+          >
+            ${student.avg}★
+          </div>
+
+        </div>
+      `;
+    }
+  );
 }
 
 function renderStats(data) {
@@ -401,38 +604,361 @@ function renderStats(data) {
     `;
   });
 }
+const ANIMALS = [
 
+  "🐱",
+  "🦊",
+  "🐼",
+  "🐸",
+  "🐯",
+  "🐧",
+  "🦁",
+  "🐨",
+  "🐰",
+  "🐻",
+  "🐺",
+  "🦄",
+  "🐙",
+  "🐢",
+  "🐬"
+
+];
+
+function getAvatar(name) {
+
+  let hash = 0;
+
+  for (
+    let i = 0;
+    i < name.length;
+    i++
+  ) {
+
+    hash +=
+    name.charCodeAt(i);
+  }
+
+  return ANIMALS[
+    hash % ANIMALS.length
+  ];
+}
 function renderReviews(data) {
+
   if (!reviewsContainer) return;
 
   reviewsContainer.innerHTML = "";
 
   data.forEach((item) => {
-    const topicLabel = TOPIC_LABELS[item.topic] || item.topic || "Khác";
+
+    const topicLabel =
+    TOPIC_LABELS[item.topic]
+    || item.topic
+    || "Khác";
 
     reviewsContainer.innerHTML += `
-      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 shadow-lg">
-        <div class="flex justify-between items-center mb-2">
-          <div>
-            <div class="font-bold text-pink-400">
-              ${item.student_name || "Không rõ"}
+
+      <div
+        class="
+          bg-white/5
+          backdrop-blur-xl
+          border border-white/10
+          rounded-3xl
+          p-5
+          shadow-xl
+          hover:scale-[1.02]
+          hover:border-pink-500/40
+          transition-all
+        "
+      >
+
+        <div
+          class="
+            flex
+            justify-between
+            items-start
+            gap-4
+            mb-3
+          "
+        >
+
+          <div
+            class="
+              flex
+              items-center
+              gap-3
+            "
+          >
+
+            <div
+              class="
+                text-4xl
+              "
+            >
+              ${getAvatar(
+                item.student_name
+              )}
             </div>
-            <div class="text-xs text-gray-500">
-              ${item.sender_name || "Ẩn danh"} · ${topicLabel}
+
+            <div>
+
+              <div
+                class="
+                  font-black
+                  text-pink-400
+                "
+              >
+                ${item.sender_name || "Ẩn danh"}
+              </div>
+
+              <div
+                class="
+                  text-xs
+                  text-gray-500
+                "
+              >
+                ${item.student_name}
+              </div>
+
+              <div
+                class="
+                  text-xs
+                  text-cyan-400
+                  mt-1
+                "
+              >
+                ${topicLabel}
+              </div>
+
             </div>
+
           </div>
-          <div class="text-yellow-400 font-black">
-            ${Number(item.rating || 0)}/10★
+
+          <div
+            class="
+              flex
+              items-center
+              gap-2
+            "
+          >
+
+            <div
+              class="
+                text-yellow-400
+                font-black
+                text-lg
+              "
+            >
+              ${item.rating}/10★
+            </div>
+
+            ${
+              IS_ADMIN
+              ? `
+                <button
+                  onclick="deleteReview('${item.id}')"
+                  class="
+                    bg-red-500/20
+                    hover:bg-red-500/40
+                    border border-red-500/30
+                    px-3
+                    py-1
+                    rounded-lg
+                    text-xs
+                    text-red-300
+                    transition-all
+                  "
+                >
+                  🗑
+                </button>
+              `
+              : ""
+            }
+
           </div>
+
         </div>
-        <div class="text-sm text-gray-300 break-words">
+
+        <div
+          class="
+            text-gray-300
+            leading-relaxed
+            break-words
+          "
+        >
           ${item.comment || ""}
         </div>
+
       </div>
+
     `;
   });
 }
+function renderOverview(data) {
 
+  const container =
+  document.getElementById(
+    "statsOverview"
+  );
+
+  if (!container) return;
+
+  const totalReviews =
+  data.length;
+
+  const avgRating =
+  data.length
+  ? (
+      data.reduce(
+        (sum, item) =>
+          sum + item.rating,
+        0
+      ) / data.length
+    ).toFixed(1)
+  : "0.0";
+
+  const studentCount =
+  new Set(
+    data.map(
+      item =>
+      item.student_name
+    )
+  ).size;
+
+  let hottestStudent =
+  "Không có";
+
+  if (data.length) {
+
+    const counts = {};
+
+    data.forEach(item => {
+
+      counts[
+        item.student_name
+      ] =
+      (counts[
+        item.student_name
+      ] || 0) + 1;
+    });
+
+    hottestStudent =
+    Object.entries(counts)
+
+    .sort(
+      (a, b) =>
+        b[1] - a[1]
+    )[0][0];
+  }
+
+  container.innerHTML = `
+
+    <div
+      class="
+        bg-white/5
+        backdrop-blur-xl
+        border border-white/10
+        rounded-3xl
+        p-5
+        hover:scale-105
+        transition-all
+      "
+    >
+      <div class="text-gray-400 text-sm">
+        Tổng đánh giá
+      </div>
+
+      <div
+        class="
+          text-3xl
+          font-black
+          text-pink-400
+        "
+      >
+        ${totalReviews}
+      </div>
+    </div>
+
+    <div
+      class="
+        bg-white/5
+        backdrop-blur-xl
+        border border-white/10
+        rounded-3xl
+        p-5
+        hover:scale-105
+        transition-all
+      "
+    >
+      <div class="text-gray-400 text-sm">
+        Điểm trung bình
+      </div>
+
+      <div
+        class="
+          text-3xl
+          font-black
+          text-yellow-400
+        "
+      >
+        ${avgRating}★
+      </div>
+    </div>
+
+    <div
+      class="
+        bg-white/5
+        backdrop-blur-xl
+        border border-white/10
+        rounded-3xl
+        p-5
+        hover:scale-105
+        transition-all
+      "
+    >
+      <div class="text-gray-400 text-sm">
+        Học sinh được nhắc
+      </div>
+
+      <div
+        class="
+          text-3xl
+          font-black
+          text-cyan-400
+        "
+      >
+        ${studentCount}
+      </div>
+    </div>
+
+    <div
+      class="
+        bg-white/5
+        backdrop-blur-xl
+        border border-white/10
+        rounded-3xl
+        p-5
+        hover:scale-105
+        transition-all
+      "
+    >
+      <div class="text-gray-400 text-sm">
+        Hot nhất
+      </div>
+
+      <div
+        class="
+          text-lg
+          font-black
+          text-green-400
+          truncate
+        "
+      >
+        👑 ${hottestStudent}
+      </div>
+    </div>
+
+  `;
+}
 function setupRealtime() {
   mySupabase
     .channel("student_reviews")
@@ -449,11 +975,42 @@ function setupRealtime() {
     )
     .subscribe();
 }
+async function deleteReview(id) {
 
+  const confirmed =
+  confirm(
+    "Xóa review này?"
+  );
+
+  if (!confirmed) return;
+
+  const { error } =
+  await mySupabase
+  .from("student_reviews")
+  .delete()
+  .eq("id", id);
+
+  if (error) {
+
+    console.log(error);
+
+    alert(
+      "Lỗi xóa."
+    );
+
+    return;
+  }
+
+  loadFeedback();
+
+  alert(
+    "Đã xóa review."
+  );
+}
 submitBtn?.addEventListener("click", submitFeedback);
 
 initStudentList();
 initStars();
 initIdentityToggle();
 setupRealtime();
-loadFeedback();
+loadFeedback();}

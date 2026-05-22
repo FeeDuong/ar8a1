@@ -9,12 +9,83 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body class="bg-gray-950 text-white min-h-screen p-5">
-<header class="mb-8 text-center">
+<body class="
+bg-black
+text-gray-100
+font-sans
+min-h-screen
+p-4
+md:p-8
+overflow-x-hidden
+relative
+">
+<div
+  class="
+    fixed
+    inset-0
+    -z-10
+    overflow-hidden
+  "
+>
 
-  <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 text-transparent bg-clip-text">
-    RATING HỌC SINH 8A1
-  </h1>
+  <div
+    class="
+      absolute
+      top-[-200px]
+      left-[-200px]
+      w-[500px]
+      h-[500px]
+      bg-pink-500/20
+      blur-3xl
+      rounded-full
+      animate-pulse
+    "
+  ></div>
+
+  <div
+    class="
+      absolute
+      bottom-[-200px]
+      right-[-200px]
+      w-[500px]
+      h-[500px]
+      bg-cyan-500/20
+      blur-3xl
+      rounded-full
+      animate-pulse
+    "
+  ></div>
+
+</div>
+<header class="mb-8 text-center">
+  <div
+  id="statsOverview"
+  class="
+    grid
+    grid-cols-2
+    md:grid-cols-4
+    gap-4
+  "
+></div>
+
+  <h1
+  class="
+    text-5xl
+    md:text-7xl
+    font-black
+    text-transparent
+    bg-clip-text
+    bg-gradient-to-r
+    from-pink-500
+    via-purple-500
+    to-cyan-400
+    tracking-widest
+    drop-shadow-[0_0_25px_rgba(236,72,153,0.6)]
+    animate-pulse
+  "
+>
+  FORUM HỌC SINH 8A1
+</h1>
 
   <p class="text-gray-500 mt-2 text-sm">
     Hệ thống đánh giá & góp ý công khai
@@ -35,9 +106,24 @@
 </header>
   <div class="max-w-6xl mx-auto">
 
-    <h1 class="text-4xl font-black text-center mb-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-transparent bg-clip-text">
-      RATING HỌC SINH 8A1
-    </h1>
+   <h1
+  class="
+    text-5xl
+    md:text-7xl
+    font-black
+    text-transparent
+    bg-clip-text
+    bg-gradient-to-r
+    from-pink-500
+    via-purple-500
+    to-cyan-400
+    tracking-widest
+    drop-shadow-[0_0_25px_rgba(236,72,153,0.6)]
+    animate-pulse
+  "
+>
+  FORUM HỌC SINH 8A1
+</h1>
 
     <p class="text-center text-gray-500 mb-8">
       Hệ thống góp ý & đánh giá lớp học
@@ -46,7 +132,8 @@
     <div class="grid md:grid-cols-3 gap-6">
 
       <!-- FORM -->
-      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 space-y-4">
+      <div class="bg-white/5
+backdrop-blur-xl border border-gray-800 rounded-2xl p-5 space-y-4">
 
         <h2 class="text-xl font-bold text-pink-400">
           Gửi đánh giá
@@ -206,7 +293,8 @@
       <div class="md:col-span-2 space-y-6">
 
         <!-- STATS -->
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+        <div class="bg-white/5
+backdrop-blur-xl900 border border-gray-800 rounded-2xl p-5">
 
           <h2 class="text-xl font-bold text-yellow-400 mb-4">
             Bảng xếp hạng
@@ -227,6 +315,23 @@
           </h2>
 
           <div
+  class="bg-white/5
+backdrop-blur-xl border border-gray-800 rounded-3xl p-5 shadow-xl"
+>
+
+  <h2
+    class="text-2xl font-black mb-4 bg-gradient-to-r from-yellow-300 to-orange-500 text-transparent bg-clip-text"
+  >
+    🏆 TOP HỌC SINH HOT NHẤT
+  </h2>
+
+  <div
+    id="topStudentsContainer"
+    class="space-y-3"
+  ></div>
+
+</div>
+          <div
             id="reviewsContainer"
             class="space-y-3"
           ></div>
@@ -239,493 +344,7 @@
 
   </div>
 
-<script>
-
-/* eslint-disable */
-
-// =======================
-// SUPABASE
-// =======================
-
-const SUPABASE_URL =
-"https://ymqojrhnllaphkuhbcml.supabase.co";
-
-const SUPABASE_ANON_KEY =
-"sb_publishable_1e78hj6Gk9zSu5w6JI9M5A_OhreyjHJ";
-
-const mySupabase =
-supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-// =======================
-// STUDENTS
-// =======================
-
-const STUDENT_LIST = [
-  "Nguyễn Quốc An",
-  "Dương Quỳnh Anh",
-  "Vũ Phương Anh",
-  "Tạ Khánh Băng",
-  "Hoàng Quỳnh Chi",
-  "Đỗ Linh Đan",
-  "Nguyễn Hoàng Dương",
-  "Nguyễn Hoàng Phi Dương",
-  "Nguyễn Thái Bình Dương",
-  "Phùng Ánh Dương",
-  "Bùi Ngân Giang",
-  "Đỗ Hương Giang",
-  "Nguyễn Hà Giang",
-  "Nguyễn Thị Trà Giang",
-  "Đỗ Hoàng Hải",
-  "Nguyễn Văn Hải",
-  "Dương Trung Hiếu",
-  "Ngô Duy Hưng",
-  "Dương Tuấn Huy",
-  "Nguyễn Ngọc Huy",
-  "Nguyễn Bảo Khánh",
-  "Phùng Duy Khánh",
-  "Phạm Nhật Trung Kiên",
-  "Ngô Duy Lân",
-  "Tăng Ngọc Linh",
-  "Phạm Nguyễn Hải Long",
-  "Hà Tuyết Mai",
-  "Nguyễn Hải Minh",
-  "Nguyễn Nguyệt Minh",
-  "Bùi Trà My",
-  "Đỗ Diễm Thảo My",
-  "Nguyễn Ngọc Trà My",
-  "Nguyễn Hải Nam",
-  "Nguyễn Nhật Nam",
-  "Bùi Kim Ngân",
-  "Bùi Thị Minh Ngọc",
-  "Dương Tâm Ngọc",
-  "Hoàng Như Ngọc",
-  "Tạ Hoàng Minh Ngọc",
-  "Nguyễn Thị Tuyết Nhung",
-  "Phùng Nhất Phi",
-  "Phùng Hải Phong",
-  "Vũ Tuấn Phong",
-  "Dương Hoàng Quân",
-  "Nguyễn Minh Quân (19/11)",
-  "Nguyễn Minh Quân (30/10)",
-  "Đỗ Hải Thanh",
-  "Bùi Anh Thư",
-  "Vũ Thu Thủy",
-  "Phùng Minh Trang",
-  "Nguyễn Tuấn Tú",
-  "Nguyễn Minh Tuấn",
-  "Phùng Mạnh Tùng"
-];
-
-const studentSelect =
-document.getElementById(
-  "studentSelect"
-);
-
-STUDENT_LIST.forEach((name) => {
-
-  const option =
-  document.createElement("option");
-
-  option.value = name;
-  option.textContent = name;
-
-  studentSelect.appendChild(option);
-});
-
-// =======================
-// VARIABLES
-// =======================
-
-let selectedRating = 0;
-
-const stars =
-document.querySelectorAll(".star");
-
-const ratingDisplay =
-document.getElementById(
-  "ratingDisplay"
-);
-
-const submitBtn =
-document.getElementById(
-  "submitBtn"
-);
-
-const nameInputWrapper =
-document.getElementById(
-  "nameInputWrapper"
-);
-
-const identityRadios =
-document.querySelectorAll(
-  'input[name="identityMode"]'
-);
-
-// =======================
-// STARS
-// =======================
-
-stars.forEach((star) => {
-
-  star.style.color = "#4b5563";
-
-  star.addEventListener(
-    "click",
-    () => {
-
-      selectedRating =
-      parseInt(
-        star.dataset.value
-      );
-
-      ratingDisplay.innerText =
-      `${selectedRating}/10★`;
-
-      stars.forEach((s) => {
-
-        if (
-          parseInt(s.dataset.value)
-          <= selectedRating
-        ) {
-
-          s.style.color =
-          "#facc15";
-
-        } else {
-
-          s.style.color =
-          "#4b5563";
-        }
-      });
-    }
-  );
-});
-
-// =======================
-// IDENTITY
-// =======================
-
-identityRadios.forEach((radio) => {
-
-  radio.addEventListener(
-    "change",
-    () => {
-
-      if (
-        radio.value === "public"
-        &&
-        radio.checked
-      ) {
-
-        nameInputWrapper
-        .classList
-        .remove("hidden");
-
-      } else {
-
-        nameInputWrapper
-        .classList
-        .add("hidden");
-      }
-    }
-  );
-});
-
-// =======================
-// SUBMIT
-// =======================
-
-submitBtn.addEventListener(
-  "click",
-  submitFeedback
-);
-
-async function submitFeedback() {
-
-  const studentName =
-  studentSelect.value;
-
-  const topic =
-  document.getElementById(
-    "topicSelect"
-  ).value;
-
-  const comment =
-  document.getElementById(
-    "reviewComment"
-  ).value;
-
-  const identityMode =
-  document.querySelector(
-    'input[name="identityMode"]:checked'
-  ).value;
-
-  let senderName =
-  "Ẩn danh";
-
-  if (
-    identityMode === "public"
-  ) {
-
-    senderName =
-    document.getElementById(
-      "senderName"
-    ).value || "Ẩn danh";
-  }
-
-  if (!studentName) {
-
-    alert("Chọn học sinh.");
-    return;
-  }
-
-  if (selectedRating === 0) {
-
-    alert("Chấm sao trước.");
-    return;
-  }
-
-  const { error } =
-  await mySupabase
-  .from("student_reviews")
-  .insert([
-    {
-      student_name:
-        studentName,
-
-      topic:
-        topic,
-
-      rating:
-        selectedRating,
-
-      comment:
-        comment,
-
-      sender_name:
-        senderName
-    }
-  ]);
-
-  if (error) {
-
-    console.log(error);
-
-    alert("Lỗi gửi.");
-    return;
-  }
-
-  alert("Đăng thành công 🔥");
-
-  document.getElementById(
-    "reviewComment"
-  ).value = "";
-
-  document.getElementById(
-    "senderName"
-  ).value = "";
-
-  selectedRating = 0;
-
-  ratingDisplay.innerText =
-  "0/10★";
-
-  stars.forEach((s) => {
-    s.style.color = "#4b5563";
-  });
-
-  loadFeedback();
-}
-
-// =======================
-// LOAD
-// =======================
-
-async function loadFeedback() {
-
-  const { data, error } =
-  await mySupabase
-  .from("student_reviews")
-  .select("*")
-  .order(
-    "created_at",
-    { ascending: false }
-  );
-
-  if (error) {
-
-    console.log(error);
-    return;
-  }
-
-  renderStats(data);
-  renderReviews(data);
-}
-
-// =======================
-// STATS
-// =======================
-
-function renderStats(data) {
-
-  const statsContainer =
-  document.getElementById(
-    "statsContainer"
-  );
-
-  statsContainer.innerHTML =
-  "";
-
-  const grouped = {};
-
-  data.forEach((item) => {
-
-    if (
-      !grouped[
-        item.student_name
-      ]
-    ) {
-
-      grouped[
-        item.student_name
-      ] = {
-        total: 0,
-        count: 0
-      };
-    }
-
-    grouped[
-      item.student_name
-    ].total += item.rating;
-
-    grouped[
-      item.student_name
-    ].count += 1;
-  });
-
-  const sorted =
-  Object.entries(grouped)
-  .map(([name, value]) => ({
-
-    name,
-
-    avg:
-      (
-        value.total
-        /
-        value.count
-      ).toFixed(1),
-
-    count:
-      value.count
-  }))
-  .sort(
-    (a, b) => b.avg - a.avg
-  );
-
-  sorted.forEach((item) => {
-
-    statsContainer.innerHTML += `
-      <div class="bg-gray-950 border border-gray-800 rounded-xl p-4">
-        <div class="flex justify-between items-center">
-
-          <div>
-            <div class="font-bold">
-              ${item.name}
-            </div>
-
-            <div class="text-xs text-gray-500">
-              ${item.count} đánh giá
-            </div>
-          </div>
-
-          <div class="text-yellow-400 font-black text-2xl">
-            ${item.avg}★
-          </div>
-
-        </div>
-      </div>
-    `;
-  });
-}
-
-// =======================
-// REVIEWS
-// =======================
-
-function renderReviews(data) {
-
-  const reviewsContainer =
-  document.getElementById(
-    "reviewsContainer"
-  );
-
-  reviewsContainer.innerHTML =
-  "";
-
-  data.forEach((item) => {
-
-    reviewsContainer.innerHTML += `
-      <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4">
-
-        <div class="flex justify-between items-center mb-2">
-
-          <div>
-
-            <div class="font-bold text-pink-400">
-              ${item.student_name}
-            </div>
-
-            <div class="text-xs text-gray-500">
-              ${item.sender_name || "Ẩn danh"}
-            </div>
-
-          </div>
-
-          <div class="text-yellow-400 font-black">
-            ${item.rating}/10★
-          </div>
-
-        </div>
-
-        <div class="text-gray-300 text-sm">
-          ${item.comment || ""}
-        </div>
-
-      </div>
-    `;
-  });
-}
-
-// =======================
-// REALTIME
-// =======================
-
-mySupabase
-.channel("student_reviews")
-.on(
-  "postgres_changes",
-  {
-    event: "*",
-    schema: "public",
-    table: "student_reviews"
-  },
-  () => {
-    loadFeedback();
-  }
-)
-.subscribe();
-
-// =======================
-// START
-// =======================
-
-loadFeedback();
-
-</script>
+  
 <script src="app.js"></script>
 </body>
 </html>
