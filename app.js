@@ -762,8 +762,11 @@ function renderTopStudents(
     b.avg - a.avg
   )
 
-  .slice(0, 5);
+const top5 =
+sorted.slice(0, 5);
 
+const allStudents =
+sorted;
   const medals = [
 
     "🥇",
