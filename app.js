@@ -522,8 +522,7 @@ async function submitFeedback() {
       student_name:
       studentName,
 
-      student_class:
-      "8A1",
+      
 
       topic:
       topic,
