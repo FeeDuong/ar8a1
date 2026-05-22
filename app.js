@@ -1000,46 +1000,34 @@ function renderReviews(data) {
 
 async function deleteReview(id) {
 
-  const confirmed =
+  const confirmDelete =
   confirm(
-    "Xóa review?"
+    "Xóa đánh giá này?"
   );
 
-  if (!confirmed)
-  return;
+  if (!confirmDelete) return;
 
   const { error } =
   await mySupabase
-
-  .from(
-    "student_reviews"
-  )
-
+  .from("student_reviews")
   .delete()
-
-  .eq(
-    "id",
-    id
-  );
+  .eq("id", id);
 
   if (error) {
 
     console.log(error);
 
     alert(
-      "Lỗi xóa."
+      "Xóa thất bại."
     );
 
     return;
   }
 
+  alert("Đã xóa.");
+
   loadFeedback();
-
-  alert(
-    "Đã xóa."
-  );
 }
-
 // ======================
 // REALTIME
 // ======================
